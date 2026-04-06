@@ -1,15 +1,29 @@
 import os
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPConnectionParams
+from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPConnectionParams, StdioConnectionParams, StdioServerParameters
 
 mcp_server_url = os.environ.get("WORKSPACE_MCP_URL", "http://localhost:8000/mcp")
 
+# mcp_toolset = MCPToolset(
+#     connection_params=StreamableHTTPConnectionParams(
+#         url=mcp_server_url,
+#     )
+# )
+
 mcp_toolset = MCPToolset(
-    connection_params=StreamableHTTPConnectionParams(
-        url=mcp_server_url,
+    connection_params=StdioConnectionParams(
+        server_params=StdioServerParameters(
+            command="uvx",
+            args=[
+                "workspace-mcp",
+                "--tool-tier", "complete",
+                "--transport", "stdio"
+            ]
+        )
     )
 )
+
 
 root_agent = Agent(
     name="workspace_agent",
