@@ -79,7 +79,7 @@ SESSION_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 app: FastAPI = get_fast_api_app(
     agents_dir=AGENT_DIR,
-    session_service_uri=SESSION_DB_URL,
+    # session_service_uri=SESSION_DB_URL,
     allow_origins=["*"],
     web=False,
 )
