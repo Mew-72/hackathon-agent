@@ -104,7 +104,7 @@ export default function InputBar({
           <textarea
             ref={textareaRef}
             className="input-textarea"
-            placeholder="Message Workspace AI…"
+            placeholder="Message Synapse AI…"
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -140,7 +140,7 @@ export default function InputBar({
         </div>
       </div>
       <p className="input-disclaimer">
-        Workspace AI can make mistakes. Verify important information.
+        Synapse AI can make mistakes. Verify important information.
       </p>
     </div>
   );

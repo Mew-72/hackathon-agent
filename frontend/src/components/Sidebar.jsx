@@ -38,7 +38,7 @@ export default function Sidebar({
             <div className="brand-icon">
               <Sparkles size={18} />
             </div>
-            <span className="brand-text">Workspace AI</span>
+            <span className="brand-text">Synapse AI</span>
           </div>
         )}
         <button className="sidebar-collapse-btn" onClick={onToggleCollapse} title={isCollapsed ? 'Expand' : 'Collapse'}>

@@ -30,7 +30,7 @@ export default function MessageBubble({ message, onSpeak }) {
       <div className="message-content-wrapper">
         {/* Role label */}
         <div className="message-meta">
-          <span className="message-role">{isUser ? 'You' : 'Workspace AI'}</span>
+          <span className="message-role">{isUser ? 'You' : 'Synapse AI'}</span>
           <span className="message-time">{formatTime(message.timestamp)}</span>
         </div>
 

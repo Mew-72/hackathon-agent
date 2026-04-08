@@ -50,7 +50,7 @@ export default function ChatView({
                   <Sparkles size={32} />
                 </div>
               </div>
-              <h1 className="empty-title">Workspace AI</h1>
+              <h1 className="empty-title">Synapse AI</h1>
               <p className="empty-subtitle">
                 Your intelligent productivity assistant for Google Workspace
               </p>
