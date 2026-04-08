@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 import uvicorn
 from fastapi import FastAPI
 from dotenv import load_dotenv
@@ -10,12 +11,12 @@ AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
 print(AGENT_DIR)
 
 DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASS = os.getenv("DB_PASS", "your_password")
+RAW_DB_PASS = os.getenv("DB_PASS", "your_password")
+DB_PASS = urllib.parse.quote_plus(RAW_DB_PASS)
 DB_HOST = os.getenv("DB_HOST", "ALLOYDB_PRIVATE_IP")
 DB_NAME = os.getenv("DB_NAME", "postgres")
 
-# SESSION_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
-SESSION_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/{DB_NAME}?ssl=require"
+SESSION_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 app: FastAPI = get_fast_api_app(
     agents_dir=AGENT_DIR,
