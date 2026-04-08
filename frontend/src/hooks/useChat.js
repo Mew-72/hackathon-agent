@@ -291,6 +291,21 @@ export function useChat() {
         },
 
         onError(err) {
+          if (err.message && (err.message.includes('Unexpected end of JSON input') || err.message.includes('fetch failed') || err.message.includes('NetworkError'))) {
+            console.warn('Ignoring benign stream termination error:', err);
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId ? { ...m, isStreaming: false } : m
+              )
+            );
+            setIsStreaming(false);
+            isStreamingRef.current = false;
+            abortRef.current = null;
+            localSessionIdsRef.current.delete(sessionId);
+            refreshChats();
+            return;
+          }
+
           console.error('Stream error:', err);
           setMessages((prev) =>
             prev.map((m) =>

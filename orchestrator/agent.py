@@ -3,11 +3,18 @@ from google.adk.tools import AgentTool, FunctionTool
 from search.agent import root_agent as search_agent
 from workspace.agent import root_agent as workspace_agent
 
-def get_current_time():
-    from datetime import datetime
-    import pytz
-    india_timezone = pytz.timezone('Asia/Kolkata')
-    return datetime.now(tz=india_timezone).isoformat()
+def get_current_date_and_time():
+   """
+   Returns the current date and time in ISO 8601 format with timezone information.
+    
+   Args:
+         None
+   
+   """
+   from datetime import datetime
+   import pytz
+   india_timezone = pytz.timezone('Asia/Kolkata')
+   return datetime.now(tz=india_timezone).isoformat()
 
 def get_user_email():
     import os
@@ -20,7 +27,7 @@ root_agent = LlmAgent(
     model="gemini-2.5-flash",
     description="Primary orchestrator that coordinates sub-agents.",
     instruction="""
-    You can fetch the current time by calling the get_current_time function tool. For the user's convenience, present the time with just the date and time in the HH:MM format.Always use this to get the current time instead of relying on your internal clock, to avoid timezone issues and ensure up-to-date scheduling.
+    You MUUST fetch the current date and time by calling the get_current_date_and_time function tool for any task that requires it, do not assume the current date and time. For the user's convenience, present the time with just the date and time in the HH:MM AM/PM format.Always use this to get the current date and time instead of relying on your internal clock, to avoid timezone issues and ensure up-to-date scheduling.
 
     You are a productivity orchestrator who is also the user's assistant. Present the answers in a professional manner. Your main goal is to help the user manage their calendar, tasks, emails, and notes effectively through Google Workspace. You have access to a powerful workspace agent that can perform a wide range of actions in Google Calendar, Tasks, Gmail, Drive, and Docs.
     
@@ -44,6 +51,6 @@ root_agent = LlmAgent(
     from 18:00 to 20:00 IST with description 'Focus: sorting
     algorithms and dynamic programming'".
     """,
-    tools=[AgentTool(search_agent), FunctionTool(get_current_time), FunctionTool(get_user_email)],
+    tools=[AgentTool(search_agent), FunctionTool(get_current_date_and_time), FunctionTool(get_user_email)],
     sub_agents=[workspace_agent]
 )
