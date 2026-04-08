@@ -1,0 +1,84 @@
+.thought-block {
+  margin-bottom: 8px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  background: rgba(139, 92, 246, 0.04);
+}
+
+.thought-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: var(--text-accent);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  transition: background var(--transition-fast);
+}
+
+.thought-toggle:hover {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.thought-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.thought-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-primary);
+  animation: breathe 2s ease-in-out infinite;
+}
+
+.thought-label {
+  font-weight: 500;
+}
+
+.thought-content {
+  padding: 4px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 200ms ease-out;
+}
+
+.thought-step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.thought-step-marker {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--text-accent);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.thought-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-style: italic;
+}

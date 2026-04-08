@@ -1,0 +1,112 @@
+.voice-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 200ms ease-out;
+}
+
+.voice-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 48px;
+  position: relative;
+}
+
+.voice-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.voice-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+.voice-ring-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-ring {
+  position: absolute;
+  border-radius: var(--radius-full);
+  transition: transform 50ms ease-out;
+}
+
+.voice-ring-outer {
+  width: 140px;
+  height: 140px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+}
+
+.voice-ring-middle {
+  width: 110px;
+  height: 110px;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.recording .voice-ring-outer {
+  border-color: rgba(139, 92, 246, 0.35);
+  animation: breathe 2s ease-in-out infinite;
+}
+
+.recording .voice-ring-middle {
+  border-color: rgba(6, 182, 212, 0.35);
+  animation: breathe 2s ease-in-out infinite 0.3s;
+}
+
+.voice-mic-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--accent-gradient);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  box-shadow: var(--accent-glow);
+  position: relative;
+  z-index: 1;
+}
+
+.voice-mic-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+}
+
+.voice-waveform {
+  width: 320px;
+  height: 80px;
+}
+
+.voice-status {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}

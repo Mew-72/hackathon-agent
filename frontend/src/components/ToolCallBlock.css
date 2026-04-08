@@ -1,0 +1,128 @@
+.tool-call-block {
+  margin-bottom: 6px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tool-call-block.status-running {
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.tool-call-block.status-complete {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.tool-call-block.status-error {
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.tool-call-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  transition: background var(--transition-fast);
+}
+
+.tool-call-header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tool-call-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-call-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--accent-secondary);
+}
+
+.tool-call-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tool-call-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-tertiary);
+}
+
+.tool-call-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+.tool-call-status.status-running {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--info);
+}
+
+.tool-call-status.status-complete {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.tool-call-status.status-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+.tool-call-details {
+  padding: 0 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 200ms ease-out;
+}
+
+.tool-call-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.tool-call-json {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
