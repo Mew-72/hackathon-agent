@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+# Install uv (needed for uvx workspace-mcp subprocess)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Pre-cache workspace-mcp so uvx doesn't download at runtime
+RUN uvx workspace-mcp --help || true
+
+# Copy source code
+COPY . .
+
+EXPOSE 8080
+EXPOSE 8000
+
+CMD ["python", "main.py"]

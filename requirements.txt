@@ -2,3 +2,6 @@ google-adk
 mcp
 workspace-mcp
 python-dotenv
+asyncpg
+sqlalchemy
+uvicorn

@@ -1,3 +1,23 @@
+# ============ CREDENTIALS BOOTSTRAP — must run before any MCP import ============
+import os, json, pathlib
+
+_creds = {
+    "token": None,
+    "refresh_token": os.getenv("GOOGLE_OAUTH_REFRESH_TOKEN"),
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "client_id": os.getenv("GOOGLE_OAUTH_CLIENT_ID"),
+    "client_secret": os.getenv("GOOGLE_OAUTH_CLIENT_SECRET"),
+    "scopes":os.getenv("GOOGLE_OAUTH_SCOPES", "[]"),
+  "expiry": None
+}
+
+_email = os.getenv("GOOGLE_OAUTH_EMAIL")
+_creds_path = pathlib.Path.home() / ".google_workspace_mcp" / "credentials" / f"{_email}.json"
+_creds_path.parent.mkdir(parents=True, exist_ok=True)
+_creds_path.write_text(json.dumps(_creds))
+# ================================================================================
+
+# NOW normal imports
 import os
 import urllib.parse
 import uvicorn
@@ -8,7 +28,6 @@ from google.adk.cli.fast_api import get_fast_api_app
 load_dotenv()
 
 AGENT_DIR = os.path.dirname(os.path.abspath(__file__))
-print(AGENT_DIR)
 
 DB_USER = os.getenv("DB_USER", "postgres")
 RAW_DB_PASS = os.getenv("DB_PASS", "your_password")
