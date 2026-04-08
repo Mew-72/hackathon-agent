@@ -3,6 +3,7 @@ import {
   createSession,
   listSessions,
   getSession,
+  deleteSession,
   parseSessionEvents,
   streamMessage,
   mockStreamMessage,
@@ -38,19 +39,35 @@ export function useChat() {
       // Merge with locally created sessions that the server might not know about yet
       setChats((prev) => {
         const serverIds = new Set(normalized.map((s) => s.id));
+        // Build a map of the previous local state so we can preserve local titles
+        const prevMap = new Map(prev.map((c) => [c.id, c]));
+
         // Keep any local-only sessions that aren't on the server yet
         const localOnly = prev.filter(
           (c) => localSessionIdsRef.current.has(c.id) && !serverIds.has(c.id)
         );
+
+        // For server sessions, preserve the local title if server still says "New Chat"
+        const mergedServer = normalized.map((s) => {
+          const local = prevMap.get(s.id);
+          if (local && local.title !== 'New Chat' && s.title === 'New Chat') {
+            return { ...s, title: local.title };
+          }
+          return s;
+        });
+
         // Merge: local-only first (newest), then server sessions
-        const merged = [...localOnly, ...normalized];
+        const merged = [...localOnly, ...mergedServer];
         // De-duplicate by id, keeping the first occurrence
         const seen = new Set();
-        return merged.filter((c) => {
+        const finalChats = merged.filter((c) => {
           if (seen.has(c.id)) return false;
           seen.add(c.id);
           return true;
         });
+
+        chatStore.saveTitlesToCache(finalChats);
+        return finalChats;
       });
     } catch (err) {
       console.error('Failed to load sessions:', err);
@@ -136,14 +153,21 @@ export function useChat() {
     return { id: sessionId, sessionId };
   }, []);
 
-  /* ─── Delete chat (local only — ADK doesn't have a delete endpoint) ── */
+  /* ─── Delete chat (local + backend) ── */
   const deleteChat = useCallback(
-    (sessionId) => {
+    async (sessionId) => {
       localSessionIdsRef.current.delete(sessionId);
       setChats((prev) => prev.filter((c) => c.id !== sessionId));
+      chatStore.removeFromCache(sessionId);
       if (activeChatId === sessionId) {
         setActiveChatId(null);
         setMessages([]);
+      }
+
+      try {
+        await deleteSession(sessionId);
+      } catch (err) {
+        console.error('Failed to delete session on backend:', err);
       }
     },
     [activeChatId]
@@ -200,13 +224,15 @@ export function useChat() {
 
       // Update sidebar title from first message
       if (text) {
-        setChats((prev) =>
-          prev.map((c) =>
+        setChats((prev) => {
+          const updated = prev.map((c) =>
             c.id === sessionId && c.title === 'New Chat'
               ? { ...c, title: chatStore.generateTitle(text), updatedAt: new Date().toISOString() }
               : c
-          )
-        );
+          );
+          chatStore.saveTitlesToCache(updated);
+          return updated;
+        });
       }
 
       const streamFn = USE_MOCK ? mockStreamMessage : streamMessage;

@@ -4,14 +4,27 @@ export const generateId = () => uuidv4();
 
 export const generateSessionId = () => uuidv4();
 
-export const formatTimestamp = (isoString) => {
-  const date = new Date(isoString);
+export const formatTimestamp = (ts) => {
+  let date;
+  if (typeof ts === 'number') {
+    // Unix epoch seconds → ms
+    date = new Date(ts * 1000);
+  } else {
+    date = new Date(ts);
+  }
+  // Guard against invalid dates
+  if (isNaN(date.getTime())) return '';
+
   const now = new Date();
   const diff = now - date;
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
+  if (diff < 0) {
+    // Future date (clock skew) — just show date
+    return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+  }
   if (mins < 1) return 'Just now';
   if (mins < 60) return `${mins}m ago`;
   if (hours < 24) return `${hours}h ago`;

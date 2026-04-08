@@ -47,7 +47,8 @@ root_agent = Agent(
     - When creating tasks, always set due_date if mentioned
     - Confirm every action by returning the created resource ID
     - If an action fails, explain why and suggest an alternative
-    - When listing events or tasks or emails, rather than leaving at the returned item id you should return concise summaries with key details
+    - Never return vague instructions to the orchestrator. Be specific and clear.
+    - Never return any form of IDunless explicitly asked for, instead provide concise summaries of those messages or events or tasks etc which these IDs refer to.
     - Use ISO 8601 for all datetimes (e.g. 2026-04-09T18:00:00+05:30)
     - Default timezone: Asia/Kolkata (IST, UTC+5:30)
     """

@@ -38,6 +38,21 @@ export async function createSession(sessionId) {
 }
 
 /**
+ * Delete a session on the ADK backend.
+ * DELETE /apps/{app}/users/{user}/sessions/{session}
+ * @param {string} sessionId
+ */
+export async function deleteSession(sessionId) {
+  const url = `${API_BASE}/apps/${APP_NAME}/users/${USER_ID}/sessions/${sessionId}`;
+  const res = await fetch(url, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to delete session: HTTP ${res.status}`);
+  }
+}
+
+/**
  * List all sessions for the current user.
  * GET /apps/{app}/users/{user}/sessions
  * @returns {Promise<Array>} — array of session summaries (id, timestamps, etc.)
@@ -81,9 +96,19 @@ export function parseSessionEvents(events) {
   let currentAssistantMsg = null;
 
   for (const event of events) {
-    const role = event.role || event.author;
-    const parts = event.parts || event.content?.parts || [];
-    const timestamp = event.timestamp || new Date().toISOString();
+    // ADK events wrap role/parts inside `event.content`:
+    //   { author: "orchestrator", content: { role: "model", parts: [...] } }
+    // Prefer content.role ("user" | "model") over author (agent name).
+    const role = event.content?.role || event.role || event.author;
+    const parts = event.content?.parts || event.parts || [];
+
+    // ADK may return timestamp as a Unix epoch number
+    let timestamp;
+    if (typeof event.timestamp === 'number') {
+      timestamp = new Date(event.timestamp * 1000).toISOString();
+    } else {
+      timestamp = event.timestamp || new Date().toISOString();
+    }
 
     if (role === 'user') {
       // Flush any pending assistant message
@@ -115,8 +140,23 @@ export function parseSessionEvents(events) {
           isStreaming: false,
         });
       }
-    } else if (role === 'model' || role === 'assistant') {
-      // Start a new assistant message if we don't have one
+    } else if (role === 'tool') {
+      // Dedicated "tool" role for function responses
+      for (const part of parts) {
+        if (part.function_response && currentAssistantMsg) {
+          const name = part.function_response.name;
+          const tc = currentAssistantMsg.toolCalls.find(
+            (t) => t.name === name && t.result === null
+          );
+          if (tc) {
+            tc.result = part.function_response.response || {};
+          }
+        }
+      }
+    } else {
+      // Treat everything that is NOT "user" or "tool" as an assistant turn.
+      // This covers role === "model", role === "assistant", and also
+      // agent-name authors ("orchestrator", "search", "workspace", etc.)
       if (!currentAssistantMsg) {
         currentAssistantMsg = {
           id: event.id || `assistant_${messages.length}_${Date.now()}`,
@@ -162,19 +202,6 @@ export function parseSessionEvents(events) {
               status: 'complete',
               result: part.function_response.response || {},
             });
-          }
-        }
-      }
-    } else if (role === 'tool') {
-      // Some ADK setups use a separate "tool" role for function responses
-      for (const part of parts) {
-        if (part.function_response && currentAssistantMsg) {
-          const name = part.function_response.name;
-          const tc = currentAssistantMsg.toolCalls.find(
-            (t) => t.name === name && t.result === null
-          );
-          if (tc) {
-            tc.result = part.function_response.response || {};
           }
         }
       }
