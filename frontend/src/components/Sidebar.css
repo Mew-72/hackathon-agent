@@ -261,8 +261,11 @@
   .app-layout .sidebar {
     position: fixed;
     top: 0;
+    bottom: 0;
     left: 0;
-    height: 100%;
+    /* Use top+bottom instead of height:100% to avoid resolving against the
+       large (chrome-inclusive) viewport on mobile browsers. */
+    height: 100vh;
     width: 85%;
     max-width: 300px;
     z-index: 50;
@@ -270,6 +273,12 @@
     transition: transform var(--transition-base);
     /* Solid background required when the drawer floats over the chat content */
     background: var(--bg-secondary);
+  }
+
+  @supports (height: 100dvh) {
+    .app-layout .sidebar {
+      height: 100dvh;
+    }
   }
 
   .app-layout .sidebar.sidebar-mobile-open {
