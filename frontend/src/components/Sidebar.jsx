@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Plus,
   MessageSquare,
@@ -25,6 +25,17 @@ export default function Sidebar({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Auto-close the mobile sidebar when the viewport widens past the mobile breakpoint
+  useEffect(() => {
+    if (!onMobileClose) return;
+    const mql = window.matchMedia('(min-width: 769px)');
+    const handleChange = (e) => {
+      if (e.matches) onMobileClose();
+    };
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
+  }, [onMobileClose]);
+
   const filteredChats = searchQuery
     ? chats.filter((c) =>
         c.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -38,9 +49,20 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Mobile backdrop — keyboard accessible so screen-reader/keyboard users can dismiss */}
       {mobileOpen && (
-        <div className="mobile-backdrop" onClick={onMobileClose} />
+        <button
+          type="button"
+          className="mobile-backdrop"
+          aria-label="Close sidebar"
+          onClick={onMobileClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onMobileClose();
+            }
+          }}
+        />
       )}
 
       <aside className={`sidebar glass ${isCollapsed ? 'sidebar-collapsed' : ''} ${mobileOpen ? 'sidebar-mobile-open' : ''}`}>
