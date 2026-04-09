@@ -79,7 +79,7 @@ SESSION_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 app: FastAPI = get_fast_api_app(
     agents_dir=AGENT_DIR,
-    # session_service_uri=SESSION_DB_URL,
+    session_service_uri=SESSION_DB_URL,
     allow_origins=["*"],
     web=False,
 )
@@ -87,6 +87,15 @@ app: FastAPI = get_fast_api_app(
 @app.get("/")
 def read_root():
     return {"status": "ok"}
+
+@app.get("/debug-env")
+def debug_env():
+    return {
+        "client_id_set": bool(os.getenv("GOOGLE_OAUTH_CLIENT_ID")),
+        "client_secret_set": bool(os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")),
+        "refresh_token_set": bool(os.getenv("GOOGLE_OAUTH_REFRESH_TOKEN")),
+        "email": os.getenv("GOOGLE_OAUTH_EMAIL"),
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
