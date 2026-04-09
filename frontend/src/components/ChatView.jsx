@@ -62,7 +62,7 @@ export default function ChatView({
                 <button
                   key={i}
                   className="suggestion-card glass"
-                  onClick={() => onSend(DEFAULT_PLANT + s.text)}
+                  onClick={() => onSend(DEFAULT_PLANT + "\n" + s.text)}
                 >
                   <div
                     className="suggestion-icon"
