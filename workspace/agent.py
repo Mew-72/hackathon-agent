@@ -19,7 +19,8 @@ mcp_toolset = MCPToolset(
                 "workspace-mcp",
                 "--tool-tier", "complete",
                 "--transport", "stdio"
-            ]
+            ],
+            env={**os.environ}
         )
     )
 )

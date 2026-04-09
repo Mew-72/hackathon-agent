@@ -11,8 +11,9 @@ import MessageBubble from './MessageBubble';
 import InputBar from './InputBar';
 import './ChatView.css';
 
+const DEFAULT_PLANT = import.meta.env.VITE_USER_EMAIL || "Ask me for my email!\n"
 const SUGGESTIONS = [
-  { icon: Calendar, text: 'Show my calendar for this week', color: '#8b5cf6' },
+  { icon: Calendar, text: "Show my calendar for this week", color: '#8b5cf6' },
   { icon: Mail, text: 'Summarize my unread emails', color: '#06b6d4' },
   { icon: CheckSquare, text: 'List my pending tasks', color: '#22c55e' },
   { icon: FileText, text: 'Create a meeting notes doc', color: '#f59e0b' },
@@ -61,7 +62,7 @@ export default function ChatView({
                 <button
                   key={i}
                   className="suggestion-card glass"
-                  onClick={() => onSend(s.text)}
+                  onClick={() => onSend(DEFAULT_PLANT + s.text)}
                 >
                   <div
                     className="suggestion-icon"
