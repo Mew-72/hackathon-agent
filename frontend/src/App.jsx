@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Sidebar from './components/Sidebar';
 import ChatView from './components/ChatView';
 import VoiceOverlay from './components/VoiceOverlay';
@@ -86,6 +87,8 @@ export default function App() {
         onClose={() => setVoiceOpen(false)}
         onTranscript={handleVoiceTranscript}
       />
+
+      <Analytics />
     </div>
   );
 }
