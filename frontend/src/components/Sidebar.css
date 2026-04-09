@@ -270,7 +270,7 @@
     transition: transform var(--transition-base);
   }
 
-  .sidebar-mobile-open {
+  .app-layout .sidebar.sidebar-mobile-open {
     transform: translateX(0);
   }
 
