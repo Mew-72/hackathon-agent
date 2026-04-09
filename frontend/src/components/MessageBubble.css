@@ -159,3 +159,22 @@
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
 }
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .message-content-wrapper {
+    max-width: 92%;
+  }
+
+  /* Always show actions on touch devices */
+  .message-actions {
+    opacity: 1;
+  }
+
+  .message-bubble {
+    padding: 10px 12px;
+  }
+}

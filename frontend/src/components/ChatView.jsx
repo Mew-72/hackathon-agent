@@ -6,6 +6,7 @@ import {
   FileText,
   Search,
   Sparkles,
+  Menu,
 } from 'lucide-react';
 import MessageBubble from './MessageBubble';
 import InputBar from './InputBar';
@@ -26,6 +27,7 @@ export default function ChatView({
   onStop,
   onVoiceClick,
   onSpeak,
+  onMenuClick,
 }) {
   const scrollRef = useRef(null);
   const bottomRef = useRef(null);
@@ -41,6 +43,20 @@ export default function ChatView({
 
   return (
     <div className="chat-view">
+      {/* Mobile top bar */}
+      <div className="chat-mobile-header">
+        <button
+          className="chat-menu-btn"
+          onClick={onMenuClick}
+          aria-label="Open sidebar"
+        >
+          <Menu size={20} />
+        </button>
+        <div className="chat-mobile-brand">
+          <Sparkles size={16} />
+          <span>Synapse AI</span>
+        </div>
+      </div>
       {/* Messages area */}
       <div className="chat-messages" ref={scrollRef}>
         {isEmpty ? (

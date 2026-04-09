@@ -128,3 +128,19 @@
   margin-top: 8px;
   text-align: center;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .input-bar-container {
+    padding: 0 var(--space-sm) var(--space-sm);
+  }
+
+  .input-icon-btn,
+  .send-btn {
+    width: 40px;
+    height: 40px;
+  }
+}

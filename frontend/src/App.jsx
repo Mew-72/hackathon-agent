@@ -21,6 +21,7 @@ export default function App() {
   } = useChat();
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
 
   const handleSend = useCallback(
@@ -70,6 +71,8 @@ export default function App() {
         isCollapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         isLoading={isLoadingSessions}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <ChatView
@@ -79,6 +82,7 @@ export default function App() {
         onStop={stopStreaming}
         onVoiceClick={() => setVoiceOpen(true)}
         onSpeak={handleSpeak}
+        onMenuClick={() => setMobileSidebarOpen(true)}
       />
 
       <VoiceOverlay

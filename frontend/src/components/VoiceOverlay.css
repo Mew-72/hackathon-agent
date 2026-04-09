@@ -110,3 +110,21 @@
   color: var(--text-secondary);
   font-weight: 500;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .voice-modal {
+    padding: 32px 24px;
+    gap: 24px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .voice-waveform {
+    width: 100%;
+    max-width: 280px;
+  }
+}

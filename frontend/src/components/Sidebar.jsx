@@ -20,6 +20,8 @@ export default function Sidebar({
   isCollapsed,
   onToggleCollapse,
   isLoading,
+  mobileOpen,
+  onMobileClose,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -29,8 +31,19 @@ export default function Sidebar({
       )
     : chats;
 
+  const handleSelectChat = (id) => {
+    onSelectChat(id);
+    if (onMobileClose) onMobileClose();
+  };
+
   return (
-    <aside className={`sidebar glass ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div className="mobile-backdrop" onClick={onMobileClose} />
+      )}
+
+      <aside className={`sidebar glass ${isCollapsed ? 'sidebar-collapsed' : ''} ${mobileOpen ? 'sidebar-mobile-open' : ''}`}>
       {/* Header */}
       <div className="sidebar-header">
         {!isCollapsed && (
@@ -88,7 +101,7 @@ export default function Sidebar({
               <div
                 key={chat.id}
                 className={`chat-item ${chat.id === activeChatId ? 'chat-item-active' : ''}`}
-                onClick={() => onSelectChat(chat.id)}
+                onClick={() => handleSelectChat(chat.id)}
               >
                 <div className="chat-item-content">
                   <span className="chat-item-title truncate">{chat.title}</span>
@@ -113,5 +126,6 @@ export default function Sidebar({
         </>
       )}
     </aside>
+    </>
   );
 }
