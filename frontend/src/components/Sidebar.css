@@ -243,3 +243,68 @@
   to { transform: rotate(360deg); }
 }
 
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+/* Mobile sidebar backdrop */
+.mobile-backdrop {
+  /* Reset <button> UA styles */
+  appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  /* Backdrop styling */
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 49;
+  animation: fadeIn 200ms ease-out;
+  cursor: default;
+}
+
+@media (max-width: 768px) {
+  /* Override desktop sidebar layout to become a slide-in drawer */
+  .app-layout .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /* Use top+bottom instead of height:100% to avoid resolving against the
+       large (chrome-inclusive) viewport on mobile browsers. */
+    height: 100vh;
+    width: 85%;
+    max-width: 300px;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    /* Solid background required when the drawer floats over the chat content */
+    background: var(--bg-secondary);
+  }
+
+  @supports (height: 100dvh) {
+    .app-layout .sidebar {
+      height: 100dvh;
+    }
+  }
+
+  .app-layout .sidebar.sidebar-mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Hide the desktop collapse button on mobile */
+  .sidebar-collapse-btn {
+    display: none;
+  }
+
+  /* Ensure brand is always visible in mobile drawer */
+  .sidebar-header {
+    justify-content: flex-start;
+  }
+
+  /* Show delete button always on touch devices */
+  .chat-item-delete {
+    opacity: 1;
+  }
+}
+

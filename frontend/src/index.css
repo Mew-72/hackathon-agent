@@ -84,6 +84,14 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* Use dynamic viewport height on browsers that support it so the layout
+   fits within the actual visible area on mobile (excluding browser chrome) */
+@supports (height: 100dvh) {
+  html {
+    height: 100dvh;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   font-size: 14px;

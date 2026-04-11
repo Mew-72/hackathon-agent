@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Plus,
   MessageSquare,
@@ -20,8 +20,21 @@ export default function Sidebar({
   isCollapsed,
   onToggleCollapse,
   isLoading,
+  mobileOpen,
+  onMobileClose,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Auto-close the mobile sidebar when the viewport widens past the mobile breakpoint
+  useEffect(() => {
+    if (!onMobileClose) return;
+    const mql = window.matchMedia('(min-width: 769px)');
+    const handleChange = (e) => {
+      if (e.matches) onMobileClose();
+    };
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
+  }, [onMobileClose]);
 
   const filteredChats = searchQuery
     ? chats.filter((c) =>
@@ -29,8 +42,30 @@ export default function Sidebar({
       )
     : chats;
 
+  const handleSelectChat = (id) => {
+    onSelectChat(id);
+    if (onMobileClose) onMobileClose();
+  };
+
   return (
-    <aside className={`sidebar glass ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <>
+      {/* Mobile backdrop — keyboard accessible so screen-reader/keyboard users can dismiss */}
+      {mobileOpen && (
+        <button
+          type="button"
+          className="mobile-backdrop"
+          aria-label="Close sidebar"
+          onClick={onMobileClose}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onMobileClose();
+            }
+          }}
+        />
+      )}
+
+      <aside className={`sidebar glass ${isCollapsed ? 'sidebar-collapsed' : ''} ${mobileOpen ? 'sidebar-mobile-open' : ''}`}>
       {/* Header */}
       <div className="sidebar-header">
         {!isCollapsed && (
@@ -88,7 +123,7 @@ export default function Sidebar({
               <div
                 key={chat.id}
                 className={`chat-item ${chat.id === activeChatId ? 'chat-item-active' : ''}`}
-                onClick={() => onSelectChat(chat.id)}
+                onClick={() => handleSelectChat(chat.id)}
               >
                 <div className="chat-item-content">
                   <span className="chat-item-title truncate">{chat.title}</span>
@@ -113,5 +148,6 @@ export default function Sidebar({
         </>
       )}
     </aside>
+    </>
   );
 }
