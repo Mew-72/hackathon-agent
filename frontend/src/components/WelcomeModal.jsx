@@ -6,16 +6,12 @@ export default function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Show only once per session
-    const hasSeenWelcome = sessionStorage.getItem('hasSeenWelcomeModal');
-    if (!hasSeenWelcome) {
-      setIsOpen(true);
-    }
+    // Show every time the page is loaded for the hackathon
+    setIsOpen(true);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    sessionStorage.setItem('hasSeenWelcomeModal', 'true');
   };
 
   if (!isOpen) return null;
@@ -29,12 +25,23 @@ export default function WelcomeModal() {
         
         <h2>Welcome to Synapse AI! 🚀</h2>
         
-        <div className="welcome-section">
-          <h3><Info size={18} /> Test Account</h3>
+        <div className="welcome-section warning">
+          <h3><AlertCircle size={18} /> Privacy & Security</h3>
           <p>
-            For the hackathon judges: The system is integrated with Workspace using this test email:
+            Please note that user authentication is not currently implemented. 
+            <strong> All chats across all sessions are visible to anyone visiting this page.</strong>
+          </p>
+        </div>
+
+        <div className="welcome-section">
+          <h3><Info size={18} /> Workspace Testing</h3>
+          <p>
+            Because there is no authentication, the agent doesn't automatically know who you are. 
+            To use Workspace functions (like Calendar or Tasks), you must tell the agent the test email:
             <br />
             <strong>workspace.test.agent@gmail.com</strong>
+            <br />
+            at least once per chat session.
           </p>
         </div>
 
