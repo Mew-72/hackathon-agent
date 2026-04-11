@@ -5,6 +5,7 @@ import ChatView from './components/ChatView';
 import VoiceOverlay from './components/VoiceOverlay';
 import { useChat } from './hooks/useChat';
 import { useVoice } from './hooks/useVoice';
+import WelcomeModal from './components/WelcomeModal';
 import './App.css';
 
 export default function App() {
@@ -89,6 +90,8 @@ export default function App() {
       />
 
       <Analytics />
+      
+      <WelcomeModal />
     </div>
   );
 }
