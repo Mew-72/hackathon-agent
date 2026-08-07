@@ -21,6 +21,9 @@ export function useChat() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const abortRef = useRef(null);
+  // The current streamed model turn. It is reset after each complete turn so
+  // subsequent agent responses appear in their own message bubble.
+  const streamedMessageIdRef = useRef(null);
 
   // Track locally created sessions that might not yet be on the server
   const localSessionIdsRef = useRef(new Set());
@@ -219,6 +222,7 @@ export function useChat() {
       };
 
       setMessages((prev) => [...prev, userMsg, assistantMsg]);
+      streamedMessageIdRef.current = assistantMsgId;
       setIsStreaming(true);
       isStreamingRef.current = true;
 
@@ -282,12 +286,35 @@ export function useChat() {
           );
         },
 
-        onText(text) {
+        onText(text, { isPartial = false } = {}) {
+          let messageId = streamedMessageIdRef.current;
+
+          // A completed model turn starts a new message after the first one.
+          // Partial events continue replacing the content of their own bubble.
+          if (!messageId) {
+            messageId = generateId();
+            streamedMessageIdRef.current = messageId;
+            const nextAssistantMsg = {
+              id: messageId,
+              role: 'assistant',
+              content: '',
+              thoughts: [],
+              toolCalls: [],
+              timestamp: new Date().toISOString(),
+              isStreaming: true,
+            };
+            setMessages((prev) => [...prev, nextAssistantMsg]);
+          }
+
           setMessages((prev) =>
             prev.map((m) =>
-              m.id === assistantMsgId ? { ...m, content: text } : m
+              m.id === messageId ? { ...m, content: text } : m
             )
           );
+
+          if (!isPartial) {
+            streamedMessageIdRef.current = null;
+          }
         },
 
         onError(err) {
@@ -326,10 +353,9 @@ export function useChat() {
 
         onDone() {
           setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantMsgId ? { ...m, isStreaming: false } : m
-            )
+            prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m))
           );
+          streamedMessageIdRef.current = null;
           setIsStreaming(false);
           isStreamingRef.current = false;
           abortRef.current = null;

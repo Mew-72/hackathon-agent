@@ -8,11 +8,11 @@ export default defineConfig({
     proxy: {
       // Proxy all /apps and /run_sse requests to the ADK backend
       '/apps': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
       '/run_sse': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
     },

@@ -1,7 +1,12 @@
 import os
+
 from google.adk.agents import Agent
+from google.adk.tools.mcp_tool.mcp_session_manager import (
+    StdioConnectionParams,
+    StreamableHTTPConnectionParams,
+)
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPConnectionParams, StdioConnectionParams, StdioServerParameters
+from mcp import StdioServerParameters
 
 mcp_server_url = os.environ.get("WORKSPACE_MCP_URL", "http://localhost:8000/mcp")
 
@@ -14,11 +19,15 @@ mcp_server_url = os.environ.get("WORKSPACE_MCP_URL", "http://localhost:8000/mcp"
 mcp_toolset = MCPToolset(
     connection_params=StdioConnectionParams(
         server_params=StdioServerParameters(
-            command="uvx",
+            # command="uvx",
+            # command=".venv\\Scripts\\workspace-mcp.exe", # for windows 
+            command="workspace-mcp", # for linux
             args=[
-                "workspace-mcp",
+                # "workspace-mcp",
                 "--tool-tier", "complete",
-                "--transport", "stdio"
+                # "--tools", "gmail drive calendar tasks",
+                "--transport", "stdio",
+                "--single-user"
             ],
             env={**os.environ}
         )
@@ -31,13 +40,7 @@ root_agent = Agent(
     model="gemini-2.5-flash",
     description="""
     Executes actions in Google Workspace. Use this agent to:
-    - CREATE calendar events with specific times, titles, descriptions
-    - LIST calendar events to check schedule and free/busy slots
-    - CREATE tasks in Google Tasks with due dates, notes, priorities
-    - LIST / UPDATE / DELETE tasks
-    - SEND or DRAFT emails via Gmail
-    - CREATE Google Docs notes or summaries
-    - READ Drive files for context
+    - completely control the user's google workspace, you can independently work on the workspace when a user provides an intruction or task.
     Always returns confirmation of every action taken with IDs and links.
     """,
     tools=[mcp_toolset],
@@ -50,6 +53,7 @@ root_agent = Agent(
     - If an action fails, explain why and suggest an alternative
     - Never return vague instructions to the orchestrator. Be specific and clear.
     - Never return any form of IDunless explicitly asked for, instead provide concise summaries of those messages or events or tasks etc which these IDs refer to.
+    - If you are given a task that is unrelated to your work, then transfer to the orchestrator parent agent to let it decide what's to be done.    
     - Use ISO 8601 for all datetimes (e.g. 2026-04-09T18:00:00+05:30)
     - Default timezone: Asia/Kolkata (IST, UTC+5:30)
     """

@@ -154,20 +154,21 @@ export function parseSessionEvents(events) {
         }
       }
     } else {
-      // Treat everything that is NOT "user" or "tool" as an assistant turn.
-      // This covers role === "model", role === "assistant", and also
-      // agent-name authors ("orchestrator", "search", "workspace", etc.)
-      if (!currentAssistantMsg) {
-        currentAssistantMsg = {
-          id: event.id || `assistant_${messages.length}_${Date.now()}`,
-          role: 'assistant',
-          content: '',
-          thoughts: [],
-          toolCalls: [],
-          timestamp,
-          isStreaming: false,
-        };
+      // Each non-user/tool event is a separate agent turn. Preserve it as its
+      // own message rather than merging it into the prior agent response.
+      if (currentAssistantMsg) {
+        messages.push(currentAssistantMsg);
       }
+
+      currentAssistantMsg = {
+        id: event.id || `assistant_${messages.length}_${Date.now()}`,
+        role: 'assistant',
+        content: '',
+        thoughts: [],
+        toolCalls: [],
+        timestamp,
+        isStreaming: false,
+      };
 
       for (const part of parts) {
         if (part.thought && part.text) {
@@ -227,7 +228,7 @@ export function parseSessionEvents(events) {
  * @param {Function} params.onThought — callback(text)
  * @param {Function} params.onToolCall — callback({name, args, id})
  * @param {Function} params.onToolResult — callback({id, name, result})
- * @param {Function} params.onText — callback(text, isFinal)
+ * @param {Function} params.onText — callback(text, { isPartial })
  * @param {Function} params.onError — callback(error)
  * @param {Function} params.onDone — callback()
  * @returns {Function} abort — call to cancel the stream
@@ -317,7 +318,7 @@ export function streamMessage({
             } catch {
               // Non-JSON data, treat as text
               if (currentEvent === 'model_turn' || !currentEvent) {
-                onText?.(rawData, false);
+                onText?.(rawData, { isPartial: false });
               }
             }
           }
@@ -378,7 +379,7 @@ function handleEvent(eventType, data, callbacks) {
       }
 
       const text = extractText(data);
-      if (text) onText?.(text, false);
+      if (text) onText?.(text, { isPartial: data.partial === true });
       break;
     }
   }
